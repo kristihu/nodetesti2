@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/main.css" rel="stylesheet">
+</head>
+<body>
+<h1>HTML SIVU</h1>
+<form action="/upload" method="post" enctype="multipart/form-data" id="lomake">
+    <input type="text" name="fname" placeholder="Etunimi">
+    <br>
+    <input type="text" name="lname" placeholder="Sukunimi">
+    <br>
+    <label>Kuva, ääni tai video
+        <input type="file" name="kuva" accept="audio/*,video/*,image/*">
+    </label>
+    <br>
+    <button type="submit">Lähetä</button>
+</form>
+<br>
+<ul id="result">
+
+</ul>
+<script src="js/main.js"></script>
+</body>
+</html>
