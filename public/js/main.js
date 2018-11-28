@@ -10,36 +10,25 @@ const lahetaLomake = (evt) => {
     method: 'post',
     body: fd,
   };
-
   fetch('/upload', asetukset).then((response) => {
     return response.json();
   }).then((json) => {
     const polku = 'files/';
-    const thumbs = 'thumbs/';
     lista.innerHTML = '';
+    console.log(json.length);
     json.forEach(item => {
+
       const li = document.createElement('li');
-      const nappi = document.createElement('button');
-      if (item.mimetype.includes('image')) {
-        const kuva = document.createElement('img');
-        kuva.src = polku + item.ufile;
-        li.appendChild(kuva);
-      } else if (item.mimetype.includes('audio')) {
-        const aud = document.createElement('audio');
-        aud.setAttribute('controls', 'controls');
-        aud.src = polku + item.ufile;
-        li.appendChild(aud);
-      } else {
-        const vid = document.createElement('video');
-        vid.src = polku + item.ufile;
-        vid.setAttribute('controls', 'controls');
-        li.appendChild(vid);
-      }
+      const kuva = document.createElement('img');
+      kuva.src = polku + item.ufile;
+      li.appendChild(kuva);
       lista.appendChild(li);
-      lista.appendChild(nappi);
-    });
+
+   });
 
   });
 };
+
+
 
 lomake.addEventListener('submit', lahetaLomake);

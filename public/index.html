@@ -5,7 +5,7 @@
     <title>Title</title>
     <link href="css/main.css" rel="stylesheet">
 </head>
-<body>
+<body onload="lataaKuvat()">
 <h1>HELLO WORLD! GIT CHANGE</h1>
 <form action="/upload" method="post" enctype="multipart/form-data" id="lomake">
     <input type="text" name="fname" placeholder="Etunimi">
@@ -19,9 +19,83 @@
     <button type="submit">Lähetä</button>
 </form>
 <br>
+
+<form action="/like" method="post">
+    <input type="text" name="joku" value="0">
+    <button type="submit">Lähetä2</button>
+</form>
+
 <ul id="result">
 
 </ul>
 <script src="js/main.js"></script>
 </body>
+
+<script>
+
+
+
+    //lataa kuvat kun sivu avautuu
+    const lataaKuvat= function(){
+      fetch('/pageLoad').then((response) => {
+        return response.json();
+      }).then((json) => {
+        const polku = 'files/';
+        lista.innerHTML = '';
+        console.log(json.length);
+        json.forEach(item => {
+
+
+          const like = document.createElement('form');
+          const dislike = document.createElement('form');
+
+          //laita formit like buttoneihin
+          like.innerHTML = '<form method="post" action="/like" id="form"><input type = "text" name ="user" value="0" id="likeId"/></form> <button type="submit" form="form" value="Submit">Like</button>';
+
+          like.method = "post";
+          like.action = "/like";
+          like.id = "form";
+
+          const li = document.createElement('li');
+          const kuva = document.createElement('img');
+          kuva.src = polku + item.ufile;
+          li.appendChild(kuva);
+          li.appendChild(like);
+          lista.appendChild(li);
+
+
+          //UUTTA
+        //  const lomake2 = document.getElementById('#form');
+
+          const lahetaLomake2 = (evt) => {
+            evt.preventDefault();
+            const fd = new FormData(lomake);
+            const asetukset = {
+              method: 'post',
+              body: fd,
+            };
+            fetch('/like', asetukset).then((response) => {
+              return response.json();
+            }).then((json) => {
+                const amount = json[0].tykkays;
+              const likeNum = document.getElementById("likeId");
+              likeNum.value = amount;
+
+            });
+          };
+          like.addEventListener('submit', lahetaLomake2);
+
+
+        });
+      });
+
+    }
+
+
+
+
+
+
+</script>
+
 </html>

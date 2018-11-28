@@ -28,11 +28,24 @@ app.use(express.static('public'));
 const connection = database.connect();
 //testataan toimiiko tietokanta
 database.select(connection, (results) => {
-  console.log(results);
+  console.log("Asd");
 });
 
 const insertToDB = (data, res, next) => {
   database.insert(data, connection, () => {
+    next();
+  });
+};
+
+const haeTykkays = (data, req, next) => {
+  database.haeTykkays(data, connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+const tykkaa = (res, next) => {
+  database.tykkaa(connection, () => {
     next();
   });
 };
@@ -45,12 +58,41 @@ const selectAll = (req, next) => {
 };
 
 
-//tallenna tiedosto
-app.post('/upload', upload.single('kuva'), (req, res, next) => {
-  console.log(req.body);
-  console.log(req.file);
-  next();
+const selectAll2 = (req, next) => {
+  database.insertA(connection, (results) => {
+    req.custom = results;
+    next();
+  });
+};
+
+
+
+//hae päivitetyt tiedot tietokannasta
+app.use('/pageLoad', (req, res, next) => {
+  selectAll(req, next);
 });
+//lähetä tiedot selaimeen//
+app.use('/pageLoad', (req, res) => {
+ // console.log(req.custom); //kaikki kuvat
+  res.send(req.custom);
+});
+
+
+
+
+app.use('/like', (req, res, next) => {
+  const data = 2;
+  haeTykkays(data, req, next);
+});
+
+app.use('/like', (req, res, next) => {
+  const data = 2;
+  tykkaa( req, next);
+  console.log(req.custom);
+  res.send(req.custom);
+});
+
+/**
 //hae kuvasta koordinaatit
 app.use('/upload', (req, res, next) =>{
   exif.getCoordinates(req.file.path).then((coordinates)=>{
@@ -74,22 +116,32 @@ app.use('/upload', (req, res, next)=> {
 
   });
 
+});*/
+//tallenna tiedosto
+app.post('/upload', upload.single('kuva'), (req, res, next) => {
+  console.log(req.body);
+  console.log(req.file);
+  next();
 });
 
 
 // tallenna tiedot tietokantaan
 app.use('/upload', (req, res, next) => {
-  const data = [req.body.fname, req.body.lname, req.file.filename, req.file.filename+'_thumb', req.file.mimetype, req.coordinates];
+  const data = ["asd", "asd", req.file.filename, null, null, null];
   insertToDB(data, res, next);
 });
 //hae päivitetyt tiedot tietokannasta
 app.use('/upload', (req, res, next) => {
   selectAll(req, next);
 });
-//lähetä tiedot selaimeen
+//lähetä tiedot selaimeen//
 app.use('/upload', (req, res) => {
+  console.log(req.custom); //kaikki kuvat
   res.send(req.custom);
 });
+
+
+
 
 /*
 app.get('/test', (req,res) => {
